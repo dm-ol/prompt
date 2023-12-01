@@ -1,11 +1,22 @@
 apiVersion: v1
-kind: Service
+kind: Pod
 metadata:
-  name: my-app-service
+  name: my-app-pod
 spec:
-  selector:
-    app: my-app
-  ports:
-  - protocol: TCP
-    port: 80  # Replace with your app's port
-    targetPort: 80  # Replace with your app's port
+  containers:
+  - name: my-app-container
+    image: my-app-image:latest
+    ports:
+    - containerPort: 80  # Replace with your app's port
+    readinessProbe:
+      httpGet:
+        path: /healthz  # Replace with your app's readiness path
+        port: 80  # Replace with your app's port
+      initialDelaySeconds: 15
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /liveness  # Replace with your app's liveness path
+        port: 80  # Replace with your app's port
+      initialDelaySeconds: 20
+      periodSeconds: 15
