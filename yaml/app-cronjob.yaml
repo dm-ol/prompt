@@ -1,0 +1,24 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: my-app-cronjob
+spec:
+  schedule: "*/5 * * * *"  # Replace with your desired cron schedule
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: my-app
+        spec:
+          containers:
+          - name: my-app-container
+            image: my-app-image:latest
+            ports:
+            - containerPort: 80  # Replace with your app's port
+            readinessProbe:
+              httpGet:
+                path: /healthz  # Replace with your app's readiness path
+                port: 80  # Replace with your app's port
+              initialDelaySeconds: 15
+              periodSeconds: 10
