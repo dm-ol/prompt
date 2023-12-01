@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: my-job
+spec:
+  template:
+    spec:
+      # Define a persistent volume claim (PVC) named 'shared-pvc'
+      volumes:
+      - name: shared-pvc
+        persistentVolumeClaim:
+          claimName: my-persistent-volume-claim  # Name of the existing PVC to use
+
+      # Define containers within the Pod template
+      containers:
+      - name: job-container1
+        image: your-job-image1:latest
+        command: ["echo", "Running my first job"]
+
+        # Mount the persistent volume into this container
+        volumeMounts:
+        - name: shared-pvc    # Name of the volume to mount
+          mountPath: /data     # Path within the container where the volume is mounted
+
+      - name: job-container2
+        image: your-job-image2:latest
+        command: ["echo", "Running my second job"]
+
+        # Mount the same persistent volume into this container as well
+        volumeMounts:
+        - name: shared-pvc    # Name of the volume to mount
+          mountPath: /data     # Path within the container where the volume is mounted
+
+      restartPolicy: Never      # This ensures that the Pod stops after all containers in the Job have completed
